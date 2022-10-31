@@ -1,54 +1,14 @@
 mod gacha_traits;
 mod gacha_impl;
+mod user_interface;
+mod common;
 
-use std::{io, fs};
 use clap::Parser;
 
-use gacha_traits::*;
+use gacha_traits::gacha_enums::*;
 use gacha_impl::*;
-
-/// Genshin Impact Gacha Simulator @LI Runzhong
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-struct Arguments {
-    /// Number of times to simulate gacha
-    #[arg(short, long, default_value_t = 10000)]
-    num_sim: u32,
-
-    /// File path of the gacha pool configuration file
-    #[arg(short, long, default_value_t = String::from("pool.json"))]
-    file_path: String,
-
-    /// Interactive mode
-    #[arg(short, long, default_value_t = false)]
-    interactive: bool,
-}
-
-fn interactive_simulate(args: &Arguments) {
-    let pool_config = fs::read_to_string(&args.file_path)
-        .expect(&format!("Unable to read file: {}", args.file_path));
-    let pool_config: Pools = serde_json::from_str(&pool_config)
-        .expect("Unable to parse json");
-    let mut character_gacha_state = CharacterGachaState::new();
-    loop {
-        let mut num = String::new();
-        io::stdin().read_line(&mut num)
-            .expect("Unable to read line");
-        if num.trim().starts_with("q") {
-            break
-        }
-        let num: u32 = match num.trim().parse() {
-            Ok(num) => num,
-            Err(e) => continue
-        };
-        for _ in 0..num {
-            let result = character_gacha_state.simulate_character_gacha();
-            let name = result.get_item_name(&pool_config.character2);
-            print!("{} ", name);
-        }
-        println!();
-    }
-}
+use common::Arguments;
+use user_interface::*;
 
 fn main() {
     let args = Arguments::parse();

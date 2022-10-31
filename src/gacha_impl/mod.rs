@@ -1,4 +1,5 @@
 use super::gacha_traits::*;
+use super::gacha_traits::gacha_enums::*;
 use serde::{Deserialize, Serialize};
 use rand::Rng;
 

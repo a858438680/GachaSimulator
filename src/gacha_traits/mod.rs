@@ -1,5 +1,6 @@
 pub mod gacha_enums;
-pub use gacha_enums::*;
+
+use gacha_enums::*;
 use rand::Rng;
 use std::cmp::Ordering;
 
